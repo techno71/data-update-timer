@@ -103,30 +103,6 @@ export class AppService {
           allData[0]._id,
           createTableDataDto.input_data,
         );
-
-        // const newDoc = await this.updateInputData(
-        //   allData[0]._id,
-        //   createTableDataDto.input_data,
-        // );
-        // const data1 = await this.dataIncrement(newDoc.data);
-        // let isFirstStep = true;
-        // let updatedData: TblDataDocument;
-        // if (isFirstStep) {
-        //   updatedData = await this.updateTableData(allData[0]._id, data1);
-        //   isFirstStep = false;
-        // }
-        // const myInterval = setInterval(async () => {
-        //   const data2 = await this.dataIncrement(updatedData.data);
-        //   updatedData = await this.updateTableData(allData[0]._id, data2);
-        //   console.log('updatedData', updatedData);
-        //   if (updatedData.data >= updatedData.input_data) {
-        //     clearInterval(myInterval);
-        //     await this.updateTableData(allData[0]._id, 1);
-        //     await this.updateInputData(allData[0]._id, 0);
-        //   }
-        // }, 100);
-        // // await this.updateTableData(allData[0]._id, dataX);
-        // return updatedData;
       }
 
       // if new data insert
@@ -150,12 +126,4 @@ export class AppService {
       throw error;
     }
   }
-
-  // async findOneData(id: string): Promise<any> {
-  //   try {
-  //     return await this.tableDataModel.findOne({ _id: id }).exec();
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 }
