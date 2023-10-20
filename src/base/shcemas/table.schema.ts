@@ -10,6 +10,9 @@ export class Tbl_Data {
 
   @Prop()
   input_data: number;
+
+  @Prop()
+  random_id: number;
 }
 
 export const TblDataSchema = SchemaFactory.createForClass(Tbl_Data);

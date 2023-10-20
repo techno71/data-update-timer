@@ -6,7 +6,9 @@ import { TblDataSchema, Tbl_Data } from './base/shcemas/table.schema';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/tableDataDB'),
+    MongooseModule.forRoot(
+      'mongodb+srv://techno71online:s8Stsgvyn5RCZTyC@cluster0.sotzkcj.mongodb.net/tableDataDB',
+    ),
     MongooseModule.forFeature([{ name: Tbl_Data.name, schema: TblDataSchema }]),
   ],
   controllers: [AppController],
