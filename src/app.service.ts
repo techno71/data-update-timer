@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTableDataDto } from './base/dto/create-tabledata.dto';
@@ -6,6 +10,7 @@ import { TblDataDocument, Tbl_Data } from './base/shcemas/table.schema';
 import axios from 'axios';
 
 let isCounterFinished = false;
+let isPostData = true;
 
 @Injectable()
 export class AppService {
@@ -102,6 +107,7 @@ export class AppService {
           });
 
           isCounterFinished = true;
+          isPostData = false;
         }
       }, 100);
 
@@ -131,25 +137,32 @@ export class AppService {
     try {
       isCounterFinished = false;
       // if there is a row
-      const allData = await this.findAllTableData();
-      if (allData.length) {
-        return await this.timerCountUpdated(
-          allData[0]._id,
-          createTableDataDto.input_data,
-          createTableDataDto.random_id,
-        );
-      }
+      if (isPostData) {
+        const allData = await this.findAllTableData();
+        if (allData.length) {
+          isPostData = false;
+          return await this.timerCountUpdated(
+            allData[0]._id,
+            createTableDataDto.input_data,
+            createTableDataDto.random_id,
+          );
+        }
 
-      // if new data insert
-      const createNewData = await this.createData(createTableDataDto);
-      if (createNewData) {
-        return await this.timerCountUpdated(
-          createNewData._id,
-          createTableDataDto.input_data,
-          createTableDataDto.random_id,
-        );
+        // if new data insert
+        const createNewData = await this.createData(createTableDataDto);
+        if (createNewData) {
+          isPostData = false;
+          return await this.timerCountUpdated(
+            createNewData._id,
+            createTableDataDto.input_data,
+            createTableDataDto.random_id,
+          );
+        }
+        throw new InternalServerErrorException();
       }
-      throw new InternalServerErrorException();
+      throw new BadRequestException(
+        'Previous Data is on processing, try when it is done.',
+      );
     } catch (error) {
       throw error;
     }

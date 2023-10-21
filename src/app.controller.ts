@@ -1,22 +1,37 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateTableDataDto } from './base/dto/create-tabledata.dto';
 
-@Controller('data')
+@Controller('api')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post()
-  async postTableData(@Body() createTableDataDto: CreateTableDataDto) {
+  // @Post()
+  // async postTableData(@Body() createTableDataDto: CreateTableDataDto) {
+  //   try {
+  //     const res = await this.appService.createTableDataAPI(createTableDataDto);
+  //     return { data: res };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  @Get('add')
+  async GetTableData(
+    @Query('input_data', ParseIntPipe) input_data: number,
+    @Query('random_id', ParseIntPipe) random_id: number,
+  ) {
     try {
-      const res = await this.appService.createTableDataAPI(createTableDataDto);
+      const res = await this.appService.createTableDataAPI({
+        input_data,
+        random_id,
+      });
       return { data: res };
     } catch (error) {
       throw error;
     }
   }
 
-  @Get()
+  @Get('result')
   async getData() {
     try {
       return await this.appService.findOneTableData();
