@@ -87,7 +87,7 @@ export class AppService {
       const myInterval = setInterval(async () => {
         const data2 = await this.dataIncrement(updatedData.data);
         updatedData = await this.updateTableData(id, data2);
-        // console.log('updatedData', updatedData);
+        // console.log('updatedData:', updatedData);
 
         if (updatedData.data >= updatedData.input_data) {
           clearInterval(myInterval);
