@@ -107,7 +107,7 @@ export class AppService {
           });
 
           isCounterFinished = true;
-          isPostData = false;
+          isPostData = true;
         }
       }, 100);
 
