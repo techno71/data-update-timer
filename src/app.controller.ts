@@ -19,8 +19,7 @@ export class AppController {
   @Get()
   async getData() {
     try {
-      const allData = await this.appService.findAllTableData();
-      return allData;
+      return await this.appService.findOneTableData();
     } catch (error) {
       throw error;
     }

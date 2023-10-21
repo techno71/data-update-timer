@@ -150,6 +150,13 @@ export class AppService {
 
   async findAllTableData(): Promise<any> {
     try {
+      return await this.tableDataModel.find().select('-__v').exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+  async findOneTableData(): Promise<any> {
+    try {
       const allData: any = await this.tableDataModel
         .find()
         .select('-__v')
