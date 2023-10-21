@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, now } from 'mongoose';
 
 export type TblDataDocument = HydratedDocument<Tbl_Data>;
 
@@ -13,6 +13,9 @@ export class Tbl_Data {
 
   @Prop()
   random_id: number;
+
+  @Prop({ default: now() })
+  createdAt: Date;
 }
 
 export const TblDataSchema = SchemaFactory.createForClass(Tbl_Data);

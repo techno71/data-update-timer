@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, now } from 'mongoose';
 import { CreateTableDataDto } from './base/dto/create-tabledata.dto';
 import { TblDataDocument, Tbl_Data } from './base/shcemas/table.schema';
 import axios from 'axios';
@@ -43,7 +43,7 @@ export class AppService {
     try {
       return await this.tableDataModel.findOneAndUpdate(
         { _id: id },
-        { input_data: input_data, random_id: randomId },
+        { input_data: input_data, random_id: randomId, createdAt: now() },
         { new: true },
       );
     } catch (error) {
@@ -54,7 +54,7 @@ export class AppService {
     try {
       return await this.tableDataModel.findOneAndUpdate(
         { _id: id },
-        { data: data },
+        { data: data, createdAt: now() },
         { new: true },
       );
     } catch (error) {
@@ -180,6 +180,7 @@ export class AppService {
       const allData: any = await this.tableDataModel
         .find()
         .select('-__v')
+        .sort({ createdAt: -1 })
         .exec();
 
       const data = allData.length

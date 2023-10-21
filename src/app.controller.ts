@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller('api')
@@ -17,8 +17,8 @@ export class AppController {
 
   @Get('add')
   async GetTableData(
-    @Query('input_data', ParseIntPipe) input_data: number,
-    @Query('random_id', ParseIntPipe) random_id: number,
+    @Query('input_data') input_data: number,
+    @Query('random_id') random_id: number,
   ) {
     try {
       const res = await this.appService.createTableDataAPI({
