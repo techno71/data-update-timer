@@ -5,12 +5,14 @@ import { CreateTableDataDto } from './base/dto/create-tabledata.dto';
 import { TblDataDocument, Tbl_Data } from './base/shcemas/table.schema';
 import axios from 'axios';
 
+let isCounterFinished = false;
+
 @Injectable()
 export class AppService {
   constructor(
     @InjectModel(Tbl_Data.name) private tableDataModel: Model<Tbl_Data>,
   ) {}
-  isCounterFinished = false;
+  // isCounterFinished = false;
 
   async dataIncrement(x: number) {
     if (x < 2) {
@@ -28,11 +30,15 @@ export class AppService {
 
     return x;
   }
-  async updateInputData(id: string, input_data: number): Promise<any> {
+  async updateInputData(
+    id: string,
+    input_data: number,
+    randomId: number,
+  ): Promise<any> {
     try {
       return await this.tableDataModel.findOneAndUpdate(
         { _id: id },
-        { input_data: input_data },
+        { input_data: input_data, random_id: randomId },
         { new: true },
       );
     } catch (error) {
@@ -68,7 +74,7 @@ export class AppService {
   // timer for 100ms
   async timerCountUpdated(id: string, inputData: number, randomId: number) {
     try {
-      const newDoc = await this.updateInputData(id, inputData);
+      const newDoc = await this.updateInputData(id, inputData, randomId);
 
       const firstIncrementValue = await this.dataIncrement(newDoc.data);
       let isFirstStep = true;
@@ -87,7 +93,7 @@ export class AppService {
           clearInterval(myInterval);
 
           await this.updateTableData(id, 1);
-          await this.updateInputData(id, 0);
+          await this.updateInputData(id, 0, randomId);
 
           await axios.post('https://signal.pazzol.com/api/rand-x-updae', {
             key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
@@ -95,11 +101,11 @@ export class AppService {
             random_id: randomId,
           });
 
-          this.isCounterFinished = true;
+          isCounterFinished = true;
         }
       }, 100);
 
-      return this.isCounterFinished
+      return isCounterFinished
         ? {
             key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
             status: 'finish',
@@ -109,7 +115,7 @@ export class AppService {
         : {
             key_s: '',
             status: '',
-            random_id: null,
+            random_id: '',
             ...updatedData?._doc,
           };
     } catch (error) {
@@ -123,6 +129,7 @@ export class AppService {
     createTableDataDto: CreateTableDataDto,
   ): Promise<any> {
     try {
+      isCounterFinished = false;
       // if there is a row
       const allData = await this.findAllTableData();
       if (allData.length) {
@@ -164,7 +171,7 @@ export class AppService {
 
       const data = allData.length
         ? {
-            data: this.isCounterFinished
+            data: isCounterFinished
               ? {
                   ...allData[0]?._doc,
                   key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
