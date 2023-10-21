@@ -20,23 +20,7 @@ export class AppController {
   async getData() {
     try {
       const allData = await this.appService.findAllTableData();
-      return allData[0]
-        ? {
-            data:
-              allData[0].input_data !== 0
-                ? {
-                    ...allData[0]?._doc,
-                    key_s: '',
-                    status: '',
-                  }
-                : {
-                    ...allData[0]?._doc,
-                    key_s:
-                      'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
-                    status: 'finish',
-                  },
-          }
-        : { data: {} };
+      return allData;
     } catch (error) {
       throw error;
     }

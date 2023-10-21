@@ -10,6 +10,7 @@ export class AppService {
   constructor(
     @InjectModel(Tbl_Data.name) private tableDataModel: Model<Tbl_Data>,
   ) {}
+  isCounterFinished = false;
 
   async dataIncrement(x: number) {
     if (x < 2) {
@@ -68,7 +69,6 @@ export class AppService {
   async timerCountUpdated(id: string, inputData: number, randomId: number) {
     try {
       const newDoc = await this.updateInputData(id, inputData);
-      let isCounterFinished = false;
 
       const firstIncrementValue = await this.dataIncrement(newDoc.data);
       let isFirstStep = true;
@@ -95,11 +95,11 @@ export class AppService {
             random_id: randomId,
           });
 
-          isCounterFinished = true;
+          this.isCounterFinished = true;
         }
       }, 100);
 
-      return isCounterFinished
+      return this.isCounterFinished
         ? {
             key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
             status: 'finish',
@@ -148,9 +148,29 @@ export class AppService {
     }
   }
 
-  async findAllTableData(): Promise<any[]> {
+  async findAllTableData(): Promise<any> {
     try {
-      return await this.tableDataModel.find().select('-__v').exec();
+      const allData: any = await this.tableDataModel
+        .find()
+        .select('-__v')
+        .exec();
+
+      const data = allData.length
+        ? {
+            data: this.isCounterFinished
+              ? {
+                  ...allData[0]?._doc,
+                  key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
+                  status: 'finish',
+                }
+              : {
+                  ...allData[0]?._doc,
+                  key_s: '',
+                  status: '',
+                },
+          }
+        : { data: {} };
+      return data;
     } catch (error) {
       throw error;
     }
