@@ -24,4 +24,12 @@ export class AppController {
       throw error;
     }
   }
+  @Get('check')
+  async checkHealth() {
+    try {
+      return 'Hello world. Health check';
+    } catch (error) {
+      throw error;
+    }
+  }
 }
