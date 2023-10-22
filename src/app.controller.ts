@@ -42,7 +42,7 @@ export class AppController {
   @Get('check')
   async checkHealth() {
     try {
-      return 'Hello world. Health check';
+      return 'Hello world. Health check !';
     } catch (error) {
       throw error;
     }
