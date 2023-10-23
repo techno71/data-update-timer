@@ -179,7 +179,7 @@ export class AppService {
     try {
       const allData: any = await this.tableDataModel
         .find()
-        .select('-__v')
+        .select('-__v -input_data')
         .sort({ createdAt: -1 })
         .exec();
 
