@@ -161,7 +161,7 @@ export class AppService {
         throw new InternalServerErrorException();
       }
       throw new BadRequestException(
-        'Previous Data is on processing, try when it is done.',
+        'Previous Data is on processing, try when it is done!',
       );
     } catch (error) {
       throw error;
