@@ -111,7 +111,9 @@ export class AppService {
             },
           );
 
-          if (apiRes.status !== 'fail') {
+          console.log('apiRes', apiRes.data.status);
+
+          if (apiRes?.data?.status !== 'fail') {
             clearInterval(myInterval);
 
             await this.updateTableData(id, 1);
