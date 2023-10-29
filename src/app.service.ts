@@ -90,24 +90,59 @@ export class AppService {
       }
 
       const myInterval = setInterval(async () => {
+        let i = 0;
+        console.log(
+          'checking: data,',
+          updatedData.data,
+          'input_data',
+          updatedData.input_data,
+        );
+
         const data2 = await this.dataIncrement(updatedData.data);
         updatedData = await this.updateTableData(id, data2);
-        // console.log('updatedData:', updatedData);
 
         if (updatedData.data >= updatedData.input_data) {
-          clearInterval(myInterval);
+          const apiRes: any = await axios.post(
+            'https://signal.pazzol.com/api/rand-x-updae',
+            {
+              key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
+              status: 'finish',
+              random_id: randomId,
+            },
+          );
 
-          await this.updateTableData(id, 1);
-          await this.updateInputData(id, 0, randomId);
+          if (apiRes.status !== 'fail') {
+            clearInterval(myInterval);
 
-          await axios.post('https://signal.pazzol.com/api/rand-x-updae', {
-            key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
-            status: 'finish',
-            random_id: randomId,
-          });
+            await this.updateTableData(id, 1);
+            await this.updateInputData(id, 0, randomId);
+            isCounterFinished = true;
+            isPostData = true;
+          } else {
+            console.log('start again: ' + i++);
+            console.log('updatedData.input_data', updatedData.input_data);
 
-          isCounterFinished = true;
-          isPostData = true;
+            await this.updateTableData(id, 1);
+            await this.updateInputData(id, updatedData.input_data, randomId);
+
+            const newUpdatedDoc = await this.updateInputData(
+              id,
+              inputData,
+              randomId,
+            );
+
+            // for the first step
+            const firstIncrementValue = await this.dataIncrement(
+              newUpdatedDoc.data,
+            );
+            let isFirstStepUpdated = true;
+
+            if (isFirstStepUpdated) {
+              updatedData = await this.updateTableData(id, firstIncrementValue);
+              isFirstStepUpdated = false;
+            }
+            isPostData = true;
+          }
         }
       }, 100);
 
