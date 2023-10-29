@@ -113,14 +113,7 @@ export class AppService {
 
           console.log('apiRes', apiRes.data.status);
 
-          if (apiRes?.data?.status !== 'fail') {
-            clearInterval(myInterval);
-
-            await this.updateTableData(id, 1);
-            await this.updateInputData(id, 0, randomId);
-            isCounterFinished = true;
-            isPostData = true;
-          } else {
+          if (apiRes?.data?.status === 'fail') {
             console.log('start again: ' + i++);
             console.log('updatedData.input_data', updatedData.input_data);
 
@@ -143,6 +136,13 @@ export class AppService {
               updatedData = await this.updateTableData(id, firstIncrementValue);
               isFirstStepUpdated = false;
             }
+            isPostData = true;
+          } else {
+            clearInterval(myInterval);
+
+            await this.updateTableData(id, 1);
+            await this.updateInputData(id, 0, randomId);
+            isCounterFinished = true;
             isPostData = true;
           }
         }
