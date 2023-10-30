@@ -114,10 +114,14 @@ export class AppService {
             })
             .then(async (response) => {
               // console.log('axios response::::: ', response.data);
-              if (
-                response.data.status === 'fail' &&
-                updatedData.input_data >= 3
-              ) {
+              if (response.data.status === 'success') {
+                updatedData = this.updateTableData(id, 1);
+                this.updateInputData(id, 0, randomId);
+                isCounterFinished = true;
+                isPostData = true;
+
+                clearInterval(myInterval);
+              } else {
                 // console.log('start again: ' + ++i);
                 // console.log('updatedData.input_data', updatedData.input_data);
 
@@ -138,13 +142,6 @@ export class AppService {
                 }
 
                 isPostData = true;
-              } else {
-                updatedData = this.updateTableData(id, 1);
-                this.updateInputData(id, 0, randomId);
-                isCounterFinished = true;
-                isPostData = true;
-
-                clearInterval(myInterval);
               }
             })
             .catch(function (error) {
