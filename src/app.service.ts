@@ -90,61 +90,66 @@ export class AppService {
       }
 
       const myInterval = setInterval(async () => {
-        let i = 0;
-        console.log(
-          'checking: data,',
-          updatedData.data,
-          'input_data',
-          updatedData.input_data,
-        );
+        // let i = 0;
+        // console.log(
+        //   'checking: data,',
+        //   updatedData.data,
+        //   'input_data',
+        //   updatedData.input_data,
+        // );
 
         const data2 = await this.dataIncrement(updatedData.data);
         updatedData = await this.updateTableData(id, data2);
 
-        if (updatedData.data >= updatedData.input_data) {
-          const apiRes: any = await axios.post(
-            'https://signal.pazzol.com/api/rand-x-updae',
-            {
+        // console.log(
+        //   'parseInt(updatedData.data) >= parseInt(updatedData.input_data) ',
+        //   parseInt(updatedData.data) >= parseInt(updatedData.input_data),
+        // );
+        if (parseInt(updatedData.data) >= parseInt(updatedData.input_data)) {
+          axios
+            .post('https://signal.pazzol.com/api/rand-x-updae', {
               key_s: 'eyJ0eXAiOiJKV1Qidfg%!#%$%LCdf#*&*JhbGciOiJSUzI1NiJ9',
               status: 'finish',
               random_id: randomId,
-            },
-          );
+            })
+            .then(async (response) => {
+              // console.log('axios response::::: ', response.data);
+              if (
+                response.data.status === 'fail' &&
+                updatedData.input_data >= 3
+              ) {
+                // console.log('start again: ' + ++i);
+                // console.log('updatedData.input_data', updatedData.input_data);
 
-          console.log('apiRes', apiRes.data.status);
+                updatedData = await this.updateTableData(id, 1);
 
-          if (apiRes?.data?.status === 'fail') {
-            console.log('start again: ' + i++);
-            console.log('updatedData.input_data', updatedData.input_data);
+                // for the first step
+                const firstIncrementValue = await this.dataIncrement(
+                  updatedData.data,
+                );
+                let isFirstStepUpdated = true;
 
-            await this.updateTableData(id, 1);
-            await this.updateInputData(id, updatedData.input_data, randomId);
+                if (isFirstStepUpdated) {
+                  updatedData = await this.updateTableData(
+                    id,
+                    firstIncrementValue,
+                  );
+                  isFirstStepUpdated = false;
+                }
 
-            const newUpdatedDoc = await this.updateInputData(
-              id,
-              inputData,
-              randomId,
-            );
+                isPostData = true;
+              } else {
+                updatedData = this.updateTableData(id, 1);
+                this.updateInputData(id, 0, randomId);
+                isCounterFinished = true;
+                isPostData = true;
 
-            // for the first step
-            const firstIncrementValue = await this.dataIncrement(
-              newUpdatedDoc.data,
-            );
-            let isFirstStepUpdated = true;
-
-            if (isFirstStepUpdated) {
-              updatedData = await this.updateTableData(id, firstIncrementValue);
-              isFirstStepUpdated = false;
-            }
-            isPostData = true;
-          } else {
-            clearInterval(myInterval);
-
-            await this.updateTableData(id, 1);
-            await this.updateInputData(id, 0, randomId);
-            isCounterFinished = true;
-            isPostData = true;
-          }
+                clearInterval(myInterval);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }
       }, 100);
 
