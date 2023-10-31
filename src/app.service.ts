@@ -114,35 +114,35 @@ export class AppService {
             })
             .then(async (response) => {
               // console.log('axios response::::: ', response.data);
-              if (response.data.status === 'success') {
-                updatedData = this.updateTableData(id, 1);
-                this.updateInputData(id, 0, randomId);
-                isCounterFinished = true;
-                isPostData = true;
+              // if (response.data.status === 'success') {
+              clearInterval(myInterval);
+              updatedData = this.updateTableData(id, 1);
+              this.updateInputData(id, 0, randomId);
+              isCounterFinished = true;
+              isPostData = true;
 
-                clearInterval(myInterval);
-              } else {
-                // console.log('start again: ' + ++i);
-                // console.log('updatedData.input_data', updatedData.input_data);
+              // } else {
+              //   // console.log('start again: ' + ++i);
+              //   // console.log('updatedData.input_data', updatedData.input_data);
 
-                updatedData = await this.updateTableData(id, 1);
+              //   updatedData = await this.updateTableData(id, 1);
 
-                // for the first step
-                const firstIncrementValue = await this.dataIncrement(
-                  updatedData.data,
-                );
-                let isFirstStepUpdated = true;
+              //   // for the first step
+              //   const firstIncrementValue = await this.dataIncrement(
+              //     updatedData.data,
+              //   );
+              //   let isFirstStepUpdated = true;
 
-                if (isFirstStepUpdated) {
-                  updatedData = await this.updateTableData(
-                    id,
-                    firstIncrementValue,
-                  );
-                  isFirstStepUpdated = false;
-                }
+              //   if (isFirstStepUpdated) {
+              //     updatedData = await this.updateTableData(
+              //       id,
+              //       firstIncrementValue,
+              //     );
+              //     isFirstStepUpdated = false;
+              //   }
 
-                isPostData = true;
-              }
+              //   isPostData = true;
+              // }
             })
             .catch(function (error) {
               console.log(error);
